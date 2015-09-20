@@ -3,8 +3,8 @@
 #include "HuffmanTree.h"
 using namespace std;
 #define ul unsigned long
-
-string text,line;
+string text;
+ul f[257];
 char fpath[200] ,nfile[200] , newfile[200]={'E',':'} ,freqfile[200];
 
 ul getsize(char *filename)
@@ -37,26 +37,27 @@ void filesave()
 	strcpy(freqfile,newfile);
 	strcat(newfile,".dat");
 	strcat(freqfile,".freq");
-	cout<<newfile<<endl;
 	
 	ofstream of1(newfile) , of2(freqfile);
 	bitChar bchar;
+	
 	for(int j=0;j<257;j++)
 	{
 		if(freqof(j))
 		of2<<j<<" "<<freqof(j)<<endl;
 	}
+	
 	of2.close();
-string encoded="";
+	string encoded="";
+	
 	for(ul j=0;j<text.length();j++)
 	{
 		int x=text[j];
 		encoded+=codeof(text[j]);
-//		cout<<codeof(text[j])<<endl;
 	}
-	cout<<encoded<<endl;
+	
 	bchar.setBITS(encoded);
-		bchar.insertBits(of1);
+	bchar.insertBits(of1);
 	of1.close();
 	
 }
@@ -65,15 +66,19 @@ int main()
 {
 	printf("Enter File path to compress:");
 	cin>>fpath;
-	freopen(fpath,"r",stdin);
-	
+	clock_t tStart = clock();
+	ifstream ifs(fpath);
+	char ch;
 	text="";
-	while(getline(cin,line))
+	while(!ifs.eof())
 	{
-		text+=line;
+		ifs.get(ch);
+		f[ch]++;
+		text+=ch;
 	}	
-	cout<<text.length()<<endl;
-	populatepq(text);
+	ifs.close();
+	
+	populatepq(f);
 	
 	cout<<"Compressing file....."<<endl;
 	
@@ -86,5 +91,6 @@ int main()
 	cout<<"Original size..."<<getsize(fpath)<<" bytes."<<endl;
 	
 	cout<<"Size after compression..."<<getsize(newfile)<<" bytes."<<endl;
-	
+    
+    printf("Time taken to compress: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 }
