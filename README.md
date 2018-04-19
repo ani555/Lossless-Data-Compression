@@ -1,6 +1,5 @@
 # Lossless-Data-Compression
 A simple data compression software to compress big text files based on huffman algorithm.
-### Project build on UNIX
 1. To compress a textfile:
   * Run huffmanencode.cpp
   * Then enter the file path which has to be compressed
